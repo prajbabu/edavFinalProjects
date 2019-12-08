@@ -35,21 +35,28 @@ Read in both happiness data and world development indicators data separately. Su
 
 | Happiness Country Name   | WDI Country          |
 |--------------------------|----------------------|
-| Taiwan Province of China | N/A                  |
-| Trinidad & Tobago        | Trinidad and Tobago  |
-| Slovakia                 | Slovak Republic      |
-| South Korea              | Korea, Rep.          |
-| Northern Cyprus          | Cyprus               |
-| Russia                   | Russian Federation   |
-| Macedonia                | North Macedonia      |
-| Kyrgyzstan               | Kyrgyz Republic      |
-| Venezuela                | Venezuela, RB        |
-| Palestinian Territories  | West Bank and Gaza   |
-| Iran                     | Iran, Islamic Rep.   |
-| Ivory Coast              | Côte d'Ivoire        |
-| Laos                     | Lao PDR              |
 | Congo (Brazzaville)      | Congo, Rep.          |
 | Congo (Kinshasa)         | Congo, Dem. Rep.     |
 | Egypt                    | Egypt, Arab Rep.     |
+| Gambia                   | Gambia, The          |
+| Hong Kong<br>Hong Kong S.A.R., China<br>Hong Kong S.A.R. of China | Hong Kong SAR, China |
+| Iran                     | Iran, Islamic Rep.   |
+| Ivory Coast              | Côte d'Ivoire        |
+| Kyrgyzstan               | Kyrgyz Republic      |
+| Laos                     | Lao PDR              |
+| Macedonia                | North Macedonia      |
+| North Cyprus<br>Northern Cyprus          | Cyprus               |
+| Palestinian Territories  | West Bank and Gaza   |
+| Russia                   | Russian Federation   |
+| Slovakia                 | Slovak Republic      |
+| Somaliland region*       | N/A                  |
+| South Korea              | Korea, Rep.          |
+| Swaziland                | Eswatini             |
 | Syria                    | Syrian Arab Republic |
+| Taiwan<br>Taiwan Province of China* | N/A                  |
+| Venezuela                | Venezuela, RB        |
+| Trinidad & Tobago        | Trinidad and Tobago  |
 | Yemen                    | Yemen, Rep.          |
+
+\*Note these are not in the World Bank Indicators dataset.
+
