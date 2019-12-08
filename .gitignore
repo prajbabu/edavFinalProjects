@@ -1,3 +1,6 @@
 *.csv
 *.xlsx
 *.xls
+.Rproj.user
+*.Rhistory
+*.Rproj
