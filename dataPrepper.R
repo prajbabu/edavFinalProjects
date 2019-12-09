@@ -22,11 +22,16 @@ cutDownIndicators <- groupedWDI[groupedWDI$n >= 199 & !(grepl("female", groupedW
 finalCutDown <- yearSubset[yearSubset$`Indicator Name` %in% cutDownIndicators$`Indicator Name`,]
 
 # We want the year to be a variable column. Gather works...
-tidiedData <- finalCutDown %>% gather(key = "Year", value = "Value", 
-                                      -`Country Name`, 
-                                      -`Country Code`, 
-                                      -`Indicator Name`, 
+tidiedData <- finalCutDown %>% gather(key = "Year", value = "Value",
+                                      -`Country Name`,
+                                      -`Country Code`,
+                                      -`Indicator Name`,
                                       -`Indicator Code`)
+# We're not done yet though, we want to turn the indicators
+# into columns, while keeping the country name and year.
+# Now, the code is redundant. This is for correlation...
+tidiedData <- select(tidiedData, -`Indicator Code`, -`Country Code`)
+tidiedData <- spread(tidiedData, key = "Indicator Name", value = "Value")
 
 # Write to csv!
 write.table(tidiedData, file = './WDI-tidied.csv', sep = ",", row.names = FALSE)
