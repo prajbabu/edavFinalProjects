@@ -60,3 +60,24 @@ Read in both happiness data and world development indicators data separately. Su
 
 \*Note these are not in the World Bank Indicators dataset.
 
+## Question 1: Which specific indicators correlate strongly for and against the indicators used in the 2019 Happiness Report?
+See `correlation.R` for the code used to accomplish this.
+### Correlate For (Top 3 Distinct*)
+| Happiness Report Indicator | WDI Indicators which strongly correlate for |
+|----------------------------|---------------------------------------------|
+| Social support             | Wage and salaried workers (0.88)<br>Employment in services<br>Urban population |
+| Healthy Life Expectancy at Birth | Wage and salaried workers (0.88)<br>Fixed broadband subscriptions<br>Population ages 65 and above |
+| Freedom to make life choices | Depth of credit information (0.39)<br>Immunization of measles infants<br>Private credit bureau coverage |
+| Generosity | \# of Tax payments (0.41)<br>Urban population growth<br>Population growth<br> |
+| Perceptions of Corruption | Procedures to build a warehouse (0.36)<br>Time required to start a business<br>Foreign direct investment |
+
+### Correlate Against (Top 3 Distinct*)
+| Happiness Report Indicator | WDI Indicators which strongly correlate for |
+|----------------------------|---------------------------------------------|
+| Social support             | Vulnerable Employment (-0.88)<br>Self-employed<br>Infant mortality rate |
+| Healthy life expectancy at birth | Infant mortality rate (-0.93)<br>Age Dependency Ratio of young to working-age population<br>Population of ages 0-14 |
+| Freedom to make life choices | Refugee population by country of origin (-0.42)<br>Cost to import documentary compliance<br>Time required to get electricity |
+| Generosity | Labor tax and contributions as % of commercial profits (-0.42)<br>Population of ages 65 and above<br>Unemployment of total labor force |
+| Perceptions of corruption | Proportion of seats held by women in parliament (-0.46)<br>GNI per capita<br>Labor force participation of ages 15-24 |
+
+\*Distinct in the sense that if we had 3 closely linked indicators i.e. "Infant mortality rate, Under 5 mortality rate", the one with the most extreme correlation was chosen.
