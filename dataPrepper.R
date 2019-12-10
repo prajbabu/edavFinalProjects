@@ -16,7 +16,9 @@ groupedWDI <- yearSubset %>% group_by(`Indicator Name`) %>% summarise(n = n())
 # Cut down on our indicators by taking those which have at least 199 instances
 # and only counting the 'total' ones. We thought this was a safe number, as there
 # are 196 countries in the world.
-cutDownIndicators <- groupedWDI[groupedWDI$n >= 199 & !(grepl("female", groupedWDI$`Indicator Name`) | grepl("male", groupedWDI$`Indicator Name`)),]
+cutDownIndicators <- groupedWDI[groupedWDI$n >= 199 & 
+                                  !(grepl("female", groupedWDI$`Indicator Name`) | 
+                                      grepl("male", groupedWDI$`Indicator Name`)),]
 
 # Cut down on the original by the indicators that were selected.
 finalCutDown <- yearSubset[yearSubset$`Indicator Name` %in% cutDownIndicators$`Indicator Name`,]
