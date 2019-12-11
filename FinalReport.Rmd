@@ -1,0 +1,72 @@
+---
+title: "How have people perceived their happiness throughout the past 5 years?"
+author: "Priyadharshini Rajbabu, Mughilan Muthupari"
+date: "12/10/2019"
+output: 
+  html_document:
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+Place text here.
+
+## Data sources
+For the plots and analysis presented in this report, we merged the findings from two separate data sources: the World Happiness Reports, and the expansive set of World Bank indicators.
+
+### World Happiness Report
+To examine happiness, we utilized the annual World Happiness Reports from 2015 to 2019. An important thing to note is that the publishing year of the report references data collected from the *previous* year i.e. the 2019 World Happiness Report utilizes 2018 data. Each report has released data that they used to make the happiness plots. Included are the indicators that they have used. These indicators stay constant each year:
+
+- Gross Domestic Product (GDP)
+- Social support
+- Healthy life expectancy at birth
+- Freedom to make life choices
+- Generosity
+- Perceptions of corruption
+
+The report details the exact meanings of these indicators each year. There is one record for each country that was measured for that report. The numbers vary each year, from 150 one year to only about 136 the next. However, the major countries are always present. 
+
+Some issues is that although a happiness score will be present for each country, the raw values for the indicators above may not be. Additionally, each file can have inconsistencies with the column names and sheet names. 
+
+### World Bank indicators
+The World Bank houses an interactive data bank (located [here](https://data.worldbank.org/indicator)) with more than 1400 indicators for all the countries. The earliest year for some of these indicators is 1965, and it is continuously updating for the current year as data becomes available. In addition to each country, they also present aggregates for different regions of the globe, such as the Arab World, South Asia, and North America. The details of which countries belong to which group are also located at the website.
+
+The indicators themselves span multiple domains, from the economy to the health sector. Gross Domestic Product (GDP) measures are present, as well as population, education, immunization, energy consumption, and employment measures.
+
+Although there is space to have data from the 1960s, a vast majority of the time, that data is missing. This is mostly due to not having the capacity to measure that data during that time. However, 21st century data is usually present for a huge number of indicators, and so it works well for the goal of this report.
+
+With respect to indicator values, each indicator can have an expansive description that describes the original data source, how it was calculated, as well as any statistical tests that may been used to alter the original value.
+
+***
+
+The merging of this data required some subsetting the World Bank indicators to a small fraction of its size, according to constraints we imposed.
+
+## Data Transformation
+Place text here.
+
+
+
+## How does happiness scores and indicators relate to the more specific indicators that the World Bank measures?
+
+First, we want to see, in a broad sense, what specific World Bank indicators relate closely with the indicators that the World Happiness Reports use, as well as the actual score. To quantify, we can measure the correlation between each World Bank indicator and each happiness indicator for all countries in 2018. A correlation heatmap for each possible pair is seen below. World Bank indicators are placed alphabetically on the $x$-axis. Please hover to see the pair and its value.
+
+```{r correlation, code=readLines('./correlation.R'), echo=FALSE, fig.width=10, fig.height=8, message=FALSE, warning=FALSE}
+
+```
+
+The results are somewhat interesting. For one thing, regardless of the World Bank indicator, healthy life expectancy and social support seem to correlate with similar variables, and extreme at that. Even more so, these two determine the actual happiness score much more closely than the other 3. In fact, we can see that the other 3 indicators' correlations are closer to 0.
+
+In terms of the actual World Bank indicators, we see that mortality rates correlate very strongly against social support, and healthy life expectancy. The reason should be clear, as if mortality rates are high, then life expectancy naturally falls, and an increased amout of social support is needed. Additionally, the amount of vulnerable employment also correlates against these indicators.
+
+In the other direction, GDP and wage correlate very well in favor of the values for social support and healthy life expectancy at birth. Interestingly however, they also correlate **against** the corruption indicator. This indicates that although people might be enjoying the increased wealth, they also might be questioning their government as to how that wealth was obtained. However, this thought isn't very severe, as the correlation value of -0.45 isn't a high magnitude.
+
+Finally, one interesting pair of indicators are the *Urban population* and *Urban population growth*. Although these are highly linked, the former is correlated **in favor of** social support, healthy life expectancy, and hence happiness, the latter is actually correlated **against** these very same factors, to the same magnitude as well. This could be sign of urban citizens feeling happy that they are in the city (perhaps working a well-paying job?), they do not like others setting up shop in said city (perhaps these new people can compete for the very same high-paying jobs?).
+
+***
+We've seen how the World Bank indicators can affect happiness indicators, but the above correlation matrix was only for the year 2018. Would those World Bank indicators that held an extreme correlation in favor of or against still hold them for the past 5 years?
+## How do certain World Bank indicators correlate with happiness values throughout the past 5 years?
+Place selected indicators here.
+
