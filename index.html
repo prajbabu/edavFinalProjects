@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>svg{width:100%;height:430px;position:center;margin:10px auto;}
+div.tooltip {
+          position: absolute;
+          text-align: center;
+          width: auto;
+          height: 20px;
+          padding: 4px;
+          font: 15px sans-serif;
+          border: 4px;
+          background-color: blue;
+          border-radius: 25px;
+      }
+</style>
+<body>
+  <h1>Select a Country</h1>
+  <svg></svg>
+  <div id = "myDiv"></div>
+
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/topojson.v2.min.js"></script>
+  <script src="https://d3js.org/d3-queue.v3.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+var width = window.innerWidth;
+var heigh = window.innerHeight;
+var svg = d3.select("svg");
+var path = d3.geoPath().projection(d3.geoMercator().scale(100)
+     // Pan north 40 degrees
+     .center([30,50])
+    .translate([700/2,200]));
+
+var xmlHttp = new XMLHttpRequest();
+var theURL = "https://restcountries.eu/rest/v2/all"
+xmlHttp.open( "GET", theURL, false );
+xmlHttp.send( null );
+var cnames = xmlHttp.responseText;
+//var ff = d3.csv("world-country-names.csv")
+
+
+// var cont = d3.csv("dummyHappyTS.csv", function(rows) {
+//   console.log(rows.length)
+//   var len = rows.length
+//   for(var i = 0; i<len;i++){
+//     console.log(rows[i].Name)
+//   }
+// });
+var cleanDatavar1 = []
+var cleanDatavar2 = []
+var cleanDatavar3 = []
+var colnames = []
+var data = []
+
+function cleanData(cname){
+  cleanDatavar1 = []
+  cleanDatavar2 = []
+  cleanDatavar3 = []
+  colnames = []
+
+
+  var cont = d3.csv("dummyHappyTS.csv", function(rows) {
+    console.log(rows.length)
+    var len = rows.length
+    var count = 1
+    for(var i = 0; i<len;i++){
+      console.log(rows[i].Name)
+      if (rows[i].Name == cname){
+        if(count <=5){
+          console.log(rows[i].Percent)
+          var p = rows[i].Percent
+          cleanDatavar1.push(parseFloat(rows[i].Percent))
+          colnames[0] = rows[i].Indicator
+        }
+        else if (count <=10) {
+          cleanDatavar2.push(parseFloat(rows[i].Percent))
+          colnames[1] = rows[i].Indicator
+
+        }
+        else if (count <=15) {
+          cleanDatavar3.push(parseFloat(rows[i].Percent))
+          colnames[2] = rows[i].Indicator
+
+        }
+        count = count + 1;
+      }
+    }
+    console.log(colnames)
+    var d = cleanDatavar1.toString();
+    console.log(d)
+    var trace1 = {
+      x: [2014,2015,2016,2017,2018],
+      y: cleanDatavar1,
+      type: 'scatter',
+      name: colnames[0]
+    };
+    var trace2 = {
+      x: [2014,2015,2016,2017,2018],
+      y: cleanDatavar2,
+      type: 'scatter',
+      name: colnames[1]
+    };
+    var trace3 = {
+      x: [2014,2015,2016,2017,2018],
+      y: cleanDatavar3,
+      type: 'scatter',
+      name: colnames[2]
+    };
+
+    data = [trace1, trace2, trace3];
+    var outp = data;
+    Plotly.newPlot('myDiv', data);
+    return outp;
+
+
+  });
+
+
+  // var trace1 = {
+  //   x: [2014,2015,2016,2017,2018],
+  //   y: cleanDatavar1,
+  //   type: 'scatter'
+  // };
+  //
+  // var trace2 = {
+  //   x: [2014,2015,2016,2017,2018],
+  //   y: x,
+  //   type: 'scatter'
+  // };
+  //
+  // var trace3 = {
+  //   x: [2014,2015,2016,2017,2018],
+  //   y: [1,2,3,4,5],
+  //   type: 'scatter'
+  // };
+  //
+  // data = [trace1, trace2,trace3];
+
+}
+
+//Plotly.newPlot('myDiv', data);
+
+var tooltip = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+
+d3.json("https://unpkg.com/world-atlas@1/world/110m.json", function(error, world) {
+  if (error) throw error;
+  svg.selectAll("path")
+     .data(topojson.feature(world,world.objects.countries).features)
+     .enter().append("path")
+     .attr("d", path).on('mouseover', function(d) {
+          //console.log(d)
+        d3.select(this).style('fill', 'white')
+        tooltip.transition()
+            .duration(200)
+            .style("opacity", .9);
+        tooltip.html(d.id)
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY) + "px");
+      }).on('mouseout', function(d) {
+           //console.log(d)
+         d3.select(this).style('fill', 'black')
+       })
+       .on('click', function(d) {
+            //console.log(d)
+          d3.select(this).style('fill', 'white')
+          if(d.id==840){
+          cleanData("USA");
+          }
+          else if(d.id==356){
+          cleanData("India");
+          }
+        })
+});
+
+</script>
