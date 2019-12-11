@@ -67,6 +67,72 @@ Finally, one interesting pair of indicators are the *Urban population* and *Urba
 
 ***
 We've seen how the World Bank indicators can affect happiness indicators, but the above correlation matrix was only for the year 2018. Would those World Bank indicators that held an extreme correlation in favor of or against still hold them for the past 5 years?
+```{r allCorrelation, echo=FALSE}
+years = 2014:2018
+allCors = data.frame(matrix(ncol = 3, nrow = 0))
+for (year in years) {
+  # For each year, subset it, merge the datasets,
+  # and calculate the correlation matrix...
+  wdiThisYear <- wdi[wdi$Year == year,]
+  happyThisYear <- happy[happy$Year == year,]
+  # Merge on country name and year (to prevent two year columns)
+  mergedData = merge(wdiThisYear, happyThisYear, by = c("Country Name", "Year"), all.y = TRUE)
+  # Happiness are the last 5 columns, excluding the happiness column...
+  cormat = cor(x = mergedData[,3:128], y = mergedData[,129:134], use = "complete.obs")
+  
+  # Now build the plot...
+  meltedCor = melt(cormat)
+  colnames(meltedCor) <- c("WDI", "Happiness", "Correlation")
+  meltedCor = meltedCor[meltedCor$Happiness == "Happiness score",]
+  # Append the column saying the year to the beginning.
+  meltedCor <- cbind(Year = year, meltedCor[,-2])
+  # Append rows to allCors...
+  allCors <- rbind(allCors, meltedCor)
+}
+```
 ## How do certain World Bank indicators correlate with happiness values throughout the past 5 years?
-Place selected indicators here.
+One clear indictar that has affected is **GDP**. We'll see how this is correlated with happiness throughout the past 5 years. Note that this just for the entire world, not individual countries.
+```{r GDP-line, echo=FALSE, fig.width=10, fig.height=8}
+reqInd = c("GDP per capita, PPP (current international $)",
+           "Urban population (% of total population)",
+           "Wage and salaried workers, total (% of total employment) (modeled ILO estimate)",
+           "Domestic credit to private sector by banks (% of GDP)")
+positiveIndicators = allCors[allCors$WDI %in% reqInd,]
+# Unmelt it...
+unmelted <- dcast(data = positiveIndicators, formula = Year~WDI, fun.aggregate = sum, value.var = "Correlation")
+# Calculate change from 2014...
+unmelted[,2:5] <- apply(unmelted[,2:5], 2, function(x) {(x / x[1] - 1) * 100})
+# First trace...
+p <- plot_ly(data = unmelted,
+             x = ~Year,
+             y = as.formula(paste0("~`", reqInd[1], "`")),
+             name = substr(reqInd[1], 1, gregexpr('\\(', reqInd[1])[[1]][1] - 2),
+             type = 'scatter',
+             mode = 'lines')
+# For the rest, add traces as necessary...
+for (ind in reqInd[2:4]) {
+  p <- p %>% add_trace(
+    y = as.formula(paste0("~`", ind, "`")),
+    name = substr(ind, 1, gregexpr('\\(', ind)[[1]][1] - 2)
+  )
+}
+p <- layout(p,
+  font = list(family = "'Montserrat', sans-serif"),
+  title = "% Change of Correlation of WB Indicators wrt 2014",
+  xaxis = list(dtick = 1),
+  yaxis = list(title = "Percentage Change from 2014"),
+  legend = list(x = 0, y = 0, xpd = TRUE),
+  plot_bgcolor = 'transparent',
+  paper_bgcolor = 'transparent'
+)
+             
+p
+```
 
+From the graph, we can gleam a couple of things: **GDP** has historically been always correlated with happiness. This is also probably one of the reasons the World Happiness Report regularly includes it in its annual report. The percentage of **urban population** is also unchanged in its correlation values.
+
+However, more interestingly, the correlation for the amount of **waged and salaried workers** has actually dropped 10% since 2014! Even though it is a fairly high correlation value in 2018, it was higher in the past. This could be indication that people have been minorly worrying about other factors for their happiness other than just their wage.
+
+Finally, the amount of domestic credit given to the private sector has been relatively erratic with its correlation. Although this value was highly correlated, the fact that the actual value has been jumping up and down could indicate that it does not necessarily determine happiness.
+
+One interesting trend here is that in the first year, 3 of the 4 indicators all dropped their correlation values by a fair bit. In the next year, these jumped up, except for wage, which had less extreme downturn. The year of 2015 marked an uptick in the refugee crisis, and citizens around the world most likely saw how little the refugees had, and started to appreciate their current monetary holdings, regardless of what it was.

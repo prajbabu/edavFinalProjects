@@ -17,28 +17,19 @@ cormat = cor(x = mergedData[,3:128], y = mergedData[,129:134], use = "complete.o
 # Now build the plot...
 meltedCor = melt(cormat)
 colnames(meltedCor) <- c("WDI", "Happiness", "Correlation")
-# ggCor <- ggplot(meltedCor, aes(x = WDI, y = Happiness, fill = Correlation)) + 
-#   geom_tile() + 
-#   theme(axis.text.x = element_blank(), 
-#         axis.ticks.x = element_blank(),
-#         axis.title.x = element_blank(),
-#         axis.title.y = element_blank()) + 
-#   scale_fill_continuous_diverging() +
-#   labs(title = "Correlation of WDI Indicators vs. Happiness Indicators")
-# # Convert to plotly
-# t <- list(
-#   family = "'Comfortaa', cursive"
-# )
-# ggplotly(ggCor) %>% layout(font=t)
 
 p <- plot_ly(x = row.names(cormat), 
              y = colnames(cormat), 
              z = t(as.matrix(cormat)), 
-             type = "heatmap") %>%
+             type = "heatmap",
+             colorscale = "Electric") %>%
   layout(
     font = list(family = "'Montserrat', sans-serif"),
     title = "Correlation of WB Indicators vs. Happiness Indicators in 2018",
-    xaxis = list(showticklabels = FALSE, showgrid = FALSE)
+    xaxis = list(showticklabels = FALSE, showgrid = FALSE),
+    yaxis = list(tickangle = -30),
+    margin = list(l = 200),
+    paper_bgcolor = 'transparent'
   )
 p
 
