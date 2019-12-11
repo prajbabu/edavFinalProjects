@@ -91,8 +91,10 @@ for (year in years) {
 }
 ```
 ## How do certain World Bank indicators correlate with happiness values throughout the past 5 years?
-One clear indictar that has affected is **GDP**. We'll see how this is correlated with happiness throughout the past 5 years. Note that this just for the entire world, not individual countries.
-```{r GDP-line, echo=FALSE, fig.width=10, fig.height=8}
+We'll break up our analysis into indicators that have positively and negatively correlated with happiness. Additionally, we'll also look at some indicators that we personally believe should be affecting happiness.
+### Positively Correlated Indicators
+One clear indictar that has positively affected is **GDP**. We'll see how this is correlated with happiness throughout the past 5 years. Note that this just for the entire world, not individual countries.
+```{r positiveIndicators, echo=FALSE, fig.width=10, fig.height=8}
 reqInd = c("GDP per capita, PPP (current international $)",
            "Urban population (% of total population)",
            "Wage and salaried workers, total (% of total employment) (modeled ILO estimate)",
@@ -118,12 +120,13 @@ for (ind in reqInd[2:4]) {
 }
 p <- layout(p,
   font = list(family = "'Montserrat', sans-serif"),
-  title = "% Change of Correlation of WB Indicators wrt 2014",
+  title = "% Change of Correlation of Positive WB Indicators wrt 2014",
   xaxis = list(dtick = 1),
   yaxis = list(title = "Percentage Change from 2014"),
   legend = list(x = 0, y = 0, xpd = TRUE),
   plot_bgcolor = 'transparent',
-  paper_bgcolor = 'transparent'
+  paper_bgcolor = 'transparent',
+  margin = list(r = 50)
 )
              
 p
@@ -136,3 +139,51 @@ However, more interestingly, the correlation for the amount of **waged and salar
 Finally, the amount of domestic credit given to the private sector has been relatively erratic with its correlation. Although this value was highly correlated, the fact that the actual value has been jumping up and down could indicate that it does not necessarily determine happiness.
 
 One interesting trend here is that in the first year, 3 of the 4 indicators all dropped their correlation values by a fair bit. In the next year, these jumped up, except for wage, which had less extreme downturn. The year of 2015 marked an uptick in the refugee crisis, and citizens around the world most likely saw how little the refugees had, and started to appreciate their current monetary holdings, regardless of what it was.
+
+### Negatively Correlated Variables
+From our heatmap above, we can see that **vulnerable employment** and **mortality rates** are negatively correlating with happiness for 2018. We'll see if this trend held for the past 5 years. Now, since we are more interested in the magintude of the correlation, rather than the sign in this section, the correlation values have been forced to be positive.
+```{r negativeCorrelation, echo=FALSE, fig.width=10, fig.height=8}
+reqInd = c(
+  "Vulnerable employment, total (% of total employment) (modeled ILO estimate)",
+  "Mortality rate, infant (per 1,000 live births)",
+  "Rural population (% of total population)",
+  "Age dependency ratio, young (% of working-age population)"
+)
+negativeIndicators = allCors[allCors$WDI %in% reqInd,]
+
+# Unmelt it...
+unmelted <- dcast(data = negativeIndicators, formula = Year~WDI, fun.aggregate = sum, value.var = "Correlation")
+# Calculate change from 2014...
+unmelted[,2:5] <- apply(unmelted[,2:5], 2, function(x) {(abs(x) / abs(x[1]) - 1) * 100})
+# First trace...
+p <- plot_ly(data = unmelted,
+             x = ~Year,
+             y = as.formula(paste0("~`", reqInd[1], "`")),
+             name = substr(reqInd[1], 1, gregexpr('\\(', reqInd[1])[[1]][1] - 2),
+             type = 'scatter',
+             mode = 'lines')
+# For the rest, add traces as necessary...
+for (ind in reqInd[2:4]) {
+  p <- p %>% add_trace(
+    y = as.formula(paste0("~`", ind, "`")),
+    name = substr(ind, 1, gregexpr('\\(', ind)[[1]][1] - 2)
+  )
+}
+p <- layout(p,
+  font = list(family = "'Montserrat', sans-serif"),
+  title = "% Change of Correlation of Negative WB Indicators wrt 2014",
+  xaxis = list(dtick = 1),
+  yaxis = list(title = "Percentage Change from 2014"),
+  legend = list(x = 0, y = 0, xpd = TRUE),
+  plot_bgcolor = 'transparent',
+  paper_bgcolor = 'transparent',
+  margin = list(r = 50)
+)
+p
+```
+How about that? Every single indicator shown above has shown a sharp downturn in how correlated it is with happiness. **Mortality rate**'s correlation has decreased by more than 16% since 2014! **Vulnerable employment** and the **age dependency ratio of young to employees** has also decreased quite a bit. However, we can note that some of them have experience an uptick on a year-to-year to basis, such as with vulnerable employment and the young to empolyee dependency ratio.
+
+Interestingly enough, the rural population's correlation *did* in fact stay the same until about 2016, when it started to decrease. Now, recall that our previous graph had **Urban population**, which was correlated in favor of happiness. It is completely plausible that during the past 5 years, there has been a substantial increase in the number of people moving to cities, which leads to them being happier in general. Cities also usually have more stable employment, and better health facilities to minimize the number of infant deaths. Just from the fact that an increased number of people have been moving to cities, one can make the argument that the indicators graphed above are declining in importance across the board.
+
+### Other Indicators
+What about those indicators that do not have extreme values i.e. ones with correlations close to 0? 
