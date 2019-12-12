@@ -12,7 +12,19 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Introduction
-Place text here.
+The goal of our analysis is to gain insight into what factors contribute towards happiness of populations around the world, and how these factors have changed over time.
+
+Various countries are making progressions as time moves on in areas such as technology, water accessibility, literacy rates, health care, etc. These progressions are known as development indicators and are published by the World Bank. 
+In addition, the United Nations publishes a World Happiness Report annually that measures happiness of various countries. 
+
+We are interested in analyzing how such development indicators relate to the global happiness.
+For instance, we often hear that money can buy happiness, but is this true? It might also be that higher employment rates relate to a higher happiness score. Our curioustry to test these myths led us to analyzing this dataset. 
+
+Throughout this analysis, we will focus on answering the following three questions:
+1. How does happiness scores and indicators relate to the more specific indicators that the World Bank measures?
+2. How do certain World Bank indicators correlate with happiness values throughout the past 5 years?
+3. How do happiness correlations differ from country to country?
+
 
 ## Data sources
 For the plots and analysis presented in this report, we merged the findings from two separate data sources: the World Happiness Reports, and the expansive set of World Bank indicators.
