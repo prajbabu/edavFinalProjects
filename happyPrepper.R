@@ -1,10 +1,19 @@
 library(readxl)
 library(tidyverse)
+library(httr)
 
 years = 2015:2019
 
 globalCountryColName = "Country Name"
 globalYearName = "Year"
+
+fileLinks = c(
+  "https://s3.amazonaws.com/happiness-report/2015/Chapter2OnlineData_Expanded-with-Trust-and-Governance.xlsx",
+  "https://s3.amazonaws.com/happiness-report/2016/Online-data-for-chapter-2-whr-2016.xlsx",
+  "https://s3.amazonaws.com/happiness-report/2017/online-data-chapter-2-whr-2017.xlsx",
+  "https://s3.amazonaws.com/happiness-report/2018/WHR2018Chapter2OnlineData.xls",
+  "https://s3.amazonaws.com/happiness-report/2019/Chapter2OnlineData.xls"
+)
 
 indicatorNames = c(
   "Social support",
@@ -41,9 +50,23 @@ colnames(happyDF) <- c(globalCountryColName, globalYearName, indicatorNames, "Ha
 
 for (i in 1:5) {
   print(years[i])
-  filename = paste('./', years[i], 'HappyReport.xlsx', sep = "")
-  # Read in the proper sheet...
-  fullFile = read_xlsx(filename, sheet = indicatorSheetNames[i])
+  # Download excel file to a temp file..
+  # 2015-2017 reports are xlsx files,
+  # while 2018 and 2019 reports are xls files
+  if (i <= 3) {
+    GET(fileLinks[i], write_disk(tf <- tempfile(fileext = '.xlsx')))
+  } else {
+    GET(fileLinks[i], write_disk(tf <- tempfile(fileext = '.xls')))
+  }
+  # If it's 2015, we need to skip the first 3 rows...
+  if (years[i] == 2015) {
+    fullFile = read_excel(tf, sheet = indicatorSheetNames[i], skip = 3)
+    happyData <- read_excel(tf, sheet = happinessSheetNames[i], skip = 3)
+  }
+  else {
+    fullFile = read_excel(tf, sheet = indicatorSheetNames[i], skip = 0)  # 0 is default but be explicit anyway
+    happyData <- read_excel(tf, sheet = happinessSheetNames[i], skip = 0)
+  }
   # The 2019 dataset's country and year column names are
   # different.
   if (years[i] == 2019) {
@@ -68,7 +91,7 @@ for (i in 1:5) {
     countryColName = "Country"
     happinessColName = "Happiness score"
   }
-  happyData <- read_xlsx(filename, sheet = happinessSheetNames[i])
+
   # Select the country and happiness columns...
   happyData <- select(happyData, c(countryColName, happinessColName))
   # Rename the country name...
@@ -85,6 +108,9 @@ for (i in 1:5) {
   }
   # Now we do rbind on the full happiness data frame
   happyDF <- rbind(happyDF, combinedData)
+  
+  # Don't store the tempfile, unlink it so it disaapears
+  unlink(tf)
 }
 
 
