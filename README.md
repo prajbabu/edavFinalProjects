@@ -1,3 +1,7 @@
+LINK TO BLOCKBUILDER:
+
+https://bl.ocks.org/prajbabu/raw/64632ce0480ca5bdfdc03ebe55189d20/114b0d603ce3be72ff05653861f7ecef10473c64/
+
 Potential Variables:
 
 | Variable Name                                                                                         | Variable Code     |
