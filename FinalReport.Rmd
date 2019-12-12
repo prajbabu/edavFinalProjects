@@ -186,4 +186,55 @@ How about that? Every single indicator shown above has shown a sharp downturn in
 Interestingly enough, the rural population's correlation *did* in fact stay the same until about 2016, when it started to decrease. Now, recall that our previous graph had **Urban population**, which was correlated in favor of happiness. It is completely plausible that during the past 5 years, there has been a substantial increase in the number of people moving to cities, which leads to them being happier in general. Cities also usually have more stable employment, and better health facilities to minimize the number of infant deaths. Just from the fact that an increased number of people have been moving to cities, one can make the argument that the indicators graphed above are declining in importance across the board.
 
 ### Other Indicators
-What about those indicators that do not have extreme values i.e. ones with correlations close to 0? 
+What about those indicators that do not have extreme values i.e. ones with correlations close to 0? We decided to examine 4 more indicators that do not correlate with happiness very well. These are:
+- Primary school starting age
+- Number of days to get electricity
+- Unemployment(!)
+We suspected that the primary school starting age should at least affect happiness, as starting school later directly means more family time for the young kids. We also believed that as the time to get electricity increases, the overall happiness decreases, as that a huge setback in how citizens can go about their day-to-day lives. Surprisingly, the actual unemployment doesn't affect happiness at all (a correlation that is essentially 0 for 2018). Let's see how the correlation trends are:
+```{r otherGraph, echo=FALSE, fig.width=10, fig.height=8}
+reqInd = c(
+  "Primary school starting age (years)",
+  "Time required to get electricity (days)",
+  "Unemployment, total (% of total labor force) (modeled ILO estimate)"
+)
+zeroIndicators = allCors[allCors$WDI %in% reqInd,]
+
+# Unmelt it...
+unmelted <- dcast(data = zeroIndicators, formula = Year~WDI, fun.aggregate = sum, value.var = "Correlation")
+# Calculate change from 2014...
+unmelted[,2:4] <- apply(unmelted[,2:4], 2, function(x) {(abs(x) / abs(x[1]) - 1) * 100})
+# First trace...
+p <- plot_ly(data = unmelted,
+             x = ~Year,
+             y = as.formula(paste0("~`", reqInd[1], "`")),
+             name = substr(reqInd[1], 1, gregexpr('\\(', reqInd[1])[[1]][1] - 2),
+             type = 'scatter',
+             mode = 'lines')
+# For the rest, add traces as necessary...
+for (ind in reqInd[2:3]) {
+  p <- p %>% add_trace(
+    y = as.formula(paste0("~`", ind, "`")),
+    name = substr(ind, 1, gregexpr('\\(', ind)[[1]][1] - 2)
+  )
+}
+p <- layout(p,
+  font = list(family = "'Montserrat', sans-serif"),
+  title = "% Change of Correlation of Uncorrelated WB Indicators wrt 2014",
+  xaxis = list(dtick = 1),
+  yaxis = list(title = "Percentage Change from 2014"),
+  legend = list(x = 0, y = 0, xpd = TRUE),
+  plot_bgcolor = 'transparent',
+  paper_bgcolor = 'transparent',
+  margin = list(r = 50)
+)
+p
+```
+We can see that the correlation for the electricity time generally stayed the same, but the correlation for unemployment had all but disappeared in those 5 years. Taking a peak at the data, we see that the correlation for unemployment in 2014 was actually close to 0.13. This could be a sign of the collective citizens of the world placing their importance elsewhere instead of the job. Regardless of whether they have a job, picking up hobbies generally increases happiness. 
+
+Interestingly, the starting age for primary school initially lost its correlation, but then regained it to its former 2014 levels. For reference, the actual value of this correlation in 2018 was -0.195. This actually indicates that as the starting age increases, happiness decreases, albeit weakly. It was completely contradictory to our beliefs (which is definitely exciting) before we did this project. Maybe the world places a more of an importance of getting basic education as early as possible than once we initially thought?
+
+***
+
+## How do happiness correlations differ from country to country?
+
+We've seen how happiness correlates with World Bank indicators throughout the years, but what happens at a country level? Do Americans' happiness correlate with the same or similar indicators as do the Chinese? What about European nations and Scandinavian nations (Finland has been the happiest country 2 years running)?
