@@ -65,16 +65,64 @@ The result is that we have a set of World Bank indicators AND a set of happiness
 ***
 
 ## Missing data
-Place text here.
+We still need to address the issue of what data are missing. Fortunately, this handy graph below can tell us which variables are missing as well as how much of it is missing. As stated above, our transformed World Bank dataset will not have any missing data by construction. However, we still have some missing data in the happiness data set.
+```{r missing, echo=FALSE, fig.width=10, fig.height=8}
+library(visdat)
+library(ggplot2)
+library(plotly)
+library(reshape2)
+library(colorspace)
+wdi <- read.table('./WDI-tidied.csv', sep = ',', header = TRUE, check.names = FALSE)
+happy <- read.table('./happy.csv', sep = ',', header = TRUE, check.names = FALSE)
+
+# For each year, subset it, merge the datasets,
+# and calculate the correlation matrix...
+wdiThisYear <- wdi[wdi$Year == 2018,]
+happyThisYear <- happy[happy$Year == 2018,]
+# Merge on country name and year (to prevent two year columns)
+mergedData = merge(wdiThisYear, happyThisYear, by = c("Country Name", "Year"), all.y = TRUE)
+# Happiness are the last 5 columns, excluding the happiness column...
+cormat = cor(x = mergedData[,3:128], y = mergedData[,129:134], use = "complete.obs")
 
 
+vis_dat(happy)
+```
+
+We can see that although we have a happiness score for every country and every year, intermediate raw values can sometimes be missing. From the gray lines, many times all 5 of the indicators were missing, yet still there was still was score. How can this be the case that we have a calculated score when we don't have raw indicators? Well, the report has answered exactly that, as they detail how they obtained the data for those indicators. From the (Statistical Appendix)[https://s3.amazonaws.com/happiness-report/2019/WHR19_Ch2A_Appendix1.pdf], we see that they healthy life expectancy is actually measured by the World Health Orgainization, and only for the years 2000, 2005, 2010, 2015, and 2016. At times, the actually used "interpolation and extrapolation". They also note "[a] few territories/countries are not covered in the WHO data." This explains partly the missing values for healthy life expectancy.
+
+In the other indicators, the average of responses to relevant Gallup World Poll (GWP) questions were taken. For example, for the "Social support" category, the relevant GWP question was "If you were in trouble, do you have relatives or friends you can count on to help you whenever you need them, or not?". If this question was not asked in a specific country, then naturally that data will end up missing. 
+
+Section 3 of that appendix details how they **imputed** the missing data in order to compute happiness scores. In most cases, they utilized additional sources, or past averages of values if they were available. However, it seems as though they did not update the raw values for these indicators in the Excel workbook.
+
+*But*, in actuality, the happiness score lives in another sheet. In that sheet, we have values for the *explainability* of all the indicators. That is, how much does each variable explain the happiness for that country. Our guess is that they have used the imputed values to calculate these explainiabliity factors. 
+
+Due to missing factors, later on when we report on how happiness correlates with the indicators from the World Bank, we will only be using the actual happiness values. However, we still measure the immediate correlation for all the happiness indicators. In this case, the missing values are simply ignored in the correlatino calculation.
+
+***
 
 ## How does happiness scores and indicators relate to the more specific indicators that the World Bank measures?
 
 First, we want to see, in a broad sense, what specific World Bank indicators relate closely with the indicators that the World Happiness Reports use, as well as the actual score. To quantify, we can measure the correlation between each World Bank indicator and each happiness indicator for all countries in 2018. A correlation heatmap for each possible pair is seen below. World Bank indicators are placed alphabetically on the $x$-axis. Please hover to see the pair and its value.
 
-```{r correlation, code=readLines('./correlation.R'), echo=FALSE, fig.width=10, fig.height=8, message=FALSE, warning=FALSE}
+```{r correlation, echo=FALSE, fig.width=10, fig.height=8, message=FALSE, warning=FALSE}
+# Now build the plot...
+meltedCor = melt(cormat)
+colnames(meltedCor) <- c("WDI", "Happiness", "Correlation")
 
+p <- plot_ly(x = row.names(cormat), 
+             y = colnames(cormat), 
+             z = t(as.matrix(cormat)), 
+             type = "heatmap",
+             colorscale = "Electric") %>%
+  layout(
+    font = list(family = "'Montserrat', sans-serif"),
+    title = "Correlation of WB Indicators vs. Happiness Indicators in 2018",
+    xaxis = list(showticklabels = FALSE, showgrid = FALSE),
+    yaxis = list(tickangle = -30),
+    margin = list(l = 200),
+    paper_bgcolor = 'transparent'
+  )
+p
 ```
 
 The results are somewhat interesting. For one thing, regardless of the World Bank indicator, healthy life expectancy and social support seem to correlate with similar variables, and extreme at that. Even more so, these two determine the actual happiness score much more closely than the other 3. In fact, we can see that the other 3 indicators' correlations are closer to 0.
