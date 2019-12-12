@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<style>svg{width:100%;height:430px;position:center;margin:10px auto;}
+<style>svg{width:100%;height:550px;position:center;margin:10px auto;}
 div.tooltip {
           position: absolute;
           text-align: center;
@@ -9,14 +9,54 @@ div.tooltip {
           padding: 4px;
           font: 15px sans-serif;
           border: 4px;
-          background-color: blue;
+          background-color: black;
           border-radius: 25px;
+          color: white;
       }
+      body {
+  background-color: lightblue;
+  overflow:scroll;
+}
+
+      .modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0px;
+  border: 1px solid #888;
+  width: 80%;
+}
+.svg{
+  width: 400px;
+    height: 200px;
+  overflow:scroll;
+}
+
+
 </style>
 <body>
-  <h1>Select a Country</h1>
+  <h1>What Factors Correlate to World Happiness?</h1>
+  <h3>Click on a Country to find out which variables are the most correlated and least correlated to the Happiness rating.</h3>
+  <h4>Each plot depicts the percent change of the most correlated factor, least correlated factor, and overall Happiness rating.</h4>
+  <p>(The grey countries depict missing data, and have thus been excluded from the analysis.)</p>
   <svg></svg>
-  <div id = "myDiv"></div>
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+  <div id = "myDiv"></div></div></div>
 
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="https://d3js.org/topojson.v2.min.js"></script>
@@ -26,46 +66,39 @@ div.tooltip {
 var width = window.innerWidth;
 var heigh = window.innerHeight;
 var svg = d3.select("svg");
-var path = d3.geoPath().projection(d3.geoMercator().scale(100)
+var path = d3.geoPath().projection(d3.geoMercator().scale(130)
      // Pan north 40 degrees
-     .center([30,50])
-    .translate([700/2,200]));
+     .center([30,65])
+    .translate([750,200]));
 
 var xmlHttp = new XMLHttpRequest();
 var theURL = "https://restcountries.eu/rest/v2/all"
 xmlHttp.open( "GET", theURL, false );
 xmlHttp.send( null );
 var cnames = xmlHttp.responseText;
-//var ff = d3.csv("world-country-names.csv")
 
-
-// var cont = d3.csv("dummyHappyTS.csv", function(rows) {
-//   console.log(rows.length)
-//   var len = rows.length
-//   for(var i = 0; i<len;i++){
-//     console.log(rows[i].Name)
-//   }
-// });
 var cleanDatavar1 = []
 var cleanDatavar2 = []
 var cleanDatavar3 = []
 var colnames = []
 var data = []
+var cname = ""
 
-function cleanData(cname){
+function cleanData(gid){
   cleanDatavar1 = []
   cleanDatavar2 = []
   cleanDatavar3 = []
   colnames = []
+  cname = ""
 
-
-  var cont = d3.csv("dummyHappyTS.csv", function(rows) {
+  var cont = d3.csv("CountryHappinessChange.csv", function(rows) {
     console.log(rows.length)
     var len = rows.length
     var count = 1
     for(var i = 0; i<len;i++){
       console.log(rows[i].Name)
-      if (rows[i].Name == cname){
+      if (rows[i].id == gid){
+        cname = rows[i].Name
         if(count <=5){
           console.log(rows[i].Percent)
           var p = rows[i].Percent
@@ -92,57 +125,68 @@ function cleanData(cname){
       x: [2014,2015,2016,2017,2018],
       y: cleanDatavar1,
       type: 'scatter',
-      name: colnames[0]
+      name: colnames[0],
+      line: {color: 'green'}
+
     };
     var trace2 = {
       x: [2014,2015,2016,2017,2018],
       y: cleanDatavar2,
       type: 'scatter',
-      name: colnames[1]
+      name: colnames[1],
+      line: {color: 'red'}
+
     };
     var trace3 = {
       x: [2014,2015,2016,2017,2018],
       y: cleanDatavar3,
       type: 'scatter',
-      name: colnames[2]
+      name: colnames[2],
+      line: {color: 'blue'}
     };
+    var layout = {
+      title:cname + "<br> ",
+  xaxis: {
+    title: 'Year',
+    dtick: 1,
+    titlefont: {
+      family: 'Arial, sans-serif',
+      size: 16,
+      color: 'Black'
+    },
+  },
+  yaxis: {
+    title: 'Percent Change',
+    titlefont: {
+      family: 'Arial, sans-serif',
+      size: 16,
+      color: 'Black'
+    },
+  }
+};
 
     data = [trace1, trace2, trace3];
     var outp = data;
-    Plotly.newPlot('myDiv', data);
+    Plotly.newPlot('myDiv', data, layout);
     return outp;
 
 
   });
 
-
-  // var trace1 = {
-  //   x: [2014,2015,2016,2017,2018],
-  //   y: cleanDatavar1,
-  //   type: 'scatter'
-  // };
-  //
-  // var trace2 = {
-  //   x: [2014,2015,2016,2017,2018],
-  //   y: x,
-  //   type: 'scatter'
-  // };
-  //
-  // var trace3 = {
-  //   x: [2014,2015,2016,2017,2018],
-  //   y: [1,2,3,4,5],
-  //   type: 'scatter'
-  // };
-  //
-  // data = [trace1, trace2,trace3];
-
 }
-
-//Plotly.newPlot('myDiv', data);
 
 var tooltip = d3.select("body").append("div")
         .attr("class", "tooltip")
         .style("opacity", 0);
+
+var countids = {}
+d3.csv("world-country-names.csv", function(data) {
+            for (var i = 0; i < data.length; i++) {
+                console.log(data[i].name);
+                countids[data[i].id] = [data[i].analysis,data[i].name]
+
+            }
+        });
 
 
 d3.json("https://unpkg.com/world-atlas@1/world/110m.json", function(error, world) {
@@ -150,29 +194,62 @@ d3.json("https://unpkg.com/world-atlas@1/world/110m.json", function(error, world
   svg.selectAll("path")
      .data(topojson.feature(world,world.objects.countries).features)
      .enter().append("path")
-     .attr("d", path).on('mouseover', function(d) {
-          //console.log(d)
+     .attr("d", path).style('fill', function(d){
+       var gid = parseInt(d.id)
+       if(d.id <0){
+         return "grey"
+       }
+       else if(countids[gid][0]=="yes"){
+         return "green"
+       }
+       else{
+         return "grey"
+       }
+     })
+     .on('mouseover', function(d) {
+       var gid = parseInt(d.id)
+       if(countids[gid][0]=="yes"){
+
         d3.select(this).style('fill', 'white')
         tooltip.transition()
             .duration(200)
             .style("opacity", .9);
-        tooltip.html(d.id)
+        tooltip.html(countids[gid][1])
           .style("left", (d3.event.pageX) + "px")
           .style("top", (d3.event.pageY) + "px");
-      }).on('mouseout', function(d) {
-           //console.log(d)
-         d3.select(this).style('fill', 'black')
+        }
+      })
+      .on('mouseout', function(d) {
+        var gid = parseInt(d.id)
+        if(countids[gid][0]=="yes"){
+          tooltip.transition()
+              .duration(200)
+              .style("opacity", 0);
+
+         d3.select(this).style('fill', 'green')
+       }
        })
        .on('click', function(d) {
-            //console.log(d)
+         var gid = parseInt(d.id)
+         if(countids[gid][0]=="yes"){
           d3.select(this).style('fill', 'white')
-          if(d.id==840){
-          cleanData("USA");
+
+          cleanData(gid);
+
+          var modal = document.getElementById("myModal");
+          var span = document.getElementsByClassName("close");
+          modal.style.display = "block";
+
+          window.onclick = function(event) {
+            if (event.target == modal) {
+              modal.style.display = "none";
+            }
           }
-          else if(d.id==356){
-          cleanData("India");
-          }
-        })
+
+        }
+
+
+        })//end click
 });
 
 </script>
