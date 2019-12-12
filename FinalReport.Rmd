@@ -66,12 +66,13 @@ The result is that we have a set of World Bank indicators AND a set of happiness
 
 ## Missing data
 We still need to address the issue of what data are missing. Fortunately, this handy graph below can tell us which variables are missing as well as how much of it is missing. As stated above, our transformed World Bank dataset will not have any missing data by construction. However, we still have some missing data in the happiness data set.
-```{r missing, echo=FALSE, fig.width=10, fig.height=8}
+```{r missing, echo=FALSE, fig.width=10, fig.height=8, message=FALSE, warning=FALSE}
 library(visdat)
 library(ggplot2)
 library(plotly)
 library(reshape2)
 library(colorspace)
+library(naniar)
 wdi <- read.table('./WDI-tidied.csv', sep = ',', header = TRUE, check.names = FALSE)
 happy <- read.table('./happy.csv', sep = ',', header = TRUE, check.names = FALSE)
 
@@ -84,11 +85,23 @@ mergedData = merge(wdiThisYear, happyThisYear, by = c("Country Name", "Year"), a
 # Happiness are the last 5 columns, excluding the happiness column...
 cormat = cor(x = mergedData[,3:128], y = mergedData[,129:134], use = "complete.obs")
 
+# gg_miss_upset(happy, 
+#               matrix.color = "#37123C", 
+#               main.bar.color = "#9E3F3D", 
+#               sets.bar.color = "#7A306C", 
+#               shade.color = "#EBF8B8", 
+#               text.scale = 1.3, 
+#               matrix.dot.alpha = 1, 
+#               line.size = 1,
+#               show.numbers = "no"
+# )
+# Result was saved into Paint.NET and changed background color to match document.
 
-vis_dat(happy)
 ```
 
-We can see that although we have a happiness score for every country and every year, intermediate raw values can sometimes be missing. From the gray lines, many times all 5 of the indicators were missing, yet still there was still was score. How can this be the case that we have a calculated score when we don't have raw indicators? Well, the report has answered exactly that, as they detail how they obtained the data for those indicators. From the (Statistical Appendix)[https://s3.amazonaws.com/happiness-report/2019/WHR19_Ch2A_Appendix1.pdf], we see that they healthy life expectancy is actually measured by the World Health Orgainization, and only for the years 2000, 2005, 2010, 2015, and 2016. At times, the actually used "interpolation and extrapolation". They also note "[a] few territories/countries are not covered in the WHO data." This explains partly the missing values for healthy life expectancy.
+![***Upset plot showing intersection sets of missing data.***](UpSetPlot.png)
+
+The UpSet plot only shows variables which have missing data. Because the variables representing the happiness score, country, or year were displayed, this implies that we actually have a happiness score for each country and for each year. Many times, however, all 5 of the indicators were missing, yet still there was still was score. How can this be the case that we have a calculated score when we don't have raw indicators? Well, the report has answered exactly that, as they detail how they obtained the data for those indicators. From the (Statistical Appendix)[https://s3.amazonaws.com/happiness-report/2019/WHR19_Ch2A_Appendix1.pdf], we see that they healthy life expectancy is actually measured by the World Health Orgainization, and only for the years 2000, 2005, 2010, 2015, and 2016. At times, the actually used "interpolation and extrapolation". They also note "[a] few territories/countries are not covered in the WHO data." This explains partly the missing values for healthy life expectancy.
 
 In the other indicators, the average of responses to relevant Gallup World Poll (GWP) questions were taken. For example, for the "Social support" category, the relevant GWP question was "If you were in trouble, do you have relatives or friends you can count on to help you whenever you need them, or not?". If this question was not asked in a specific country, then naturally that data will end up missing. 
 
@@ -158,8 +171,12 @@ for (year in years) {
   allCors <- rbind(allCors, meltedCor)
 }
 ```
+
+***
+
 ## How do certain World Bank indicators correlate with happiness values throughout the past 5 years?
 We'll break up our analysis into indicators that have positively and negatively correlated with happiness. Additionally, we'll also look at some indicators that we personally believe should be affecting happiness.
+
 ### Positively Correlated Indicators
 One clear indictar that has positively affected is **GDP**. We'll see how this is correlated with happiness throughout the past 5 years. Note that this just for the entire world, not individual countries.
 ```{r positiveIndicators, echo=FALSE, fig.width=10, fig.height=8}
@@ -178,7 +195,9 @@ p <- plot_ly(data = unmelted,
              y = as.formula(paste0("~`", reqInd[1], "`")),
              name = substr(reqInd[1], 1, gregexpr('\\(', reqInd[1])[[1]][1] - 2),
              type = 'scatter',
-             mode = 'lines')
+             mode = 'lines',
+             colors = "yellow"
+)
 # For the rest, add traces as necessary...
 for (ind in reqInd[2:4]) {
   p <- p %>% add_trace(
