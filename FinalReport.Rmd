@@ -126,13 +126,17 @@ p <- plot_ly(x = row.names(cormat),
              y = colnames(cormat), 
              z = t(as.matrix(cormat)), 
              type = "heatmap",
-             colorscale = "Electric") %>%
+             colorscale = "Electric",
+             name = "Correlation",
+             hovertemplate= paste('%{x}', '<br><i>vs.</i>', '<br>%{y}', '<br><b>%{z:.3f}</b>')) %>%
   layout(
     font = list(family = "'Montserrat', sans-serif"),
-    title = "Correlation of WB Indicators vs. Happiness Indicators in 2018",
+    title = "<b>Correlation of WB Indicators vs. Happiness Indicators in 2018</b>",
+    titlefont = list(size = 22),
     xaxis = list(showticklabels = FALSE, showgrid = FALSE),
-    yaxis = list(tickangle = -30),
-    margin = list(l = 200),
+    yaxis = list(tickangle = -30,
+                 tickfont = list(size = 16)),
+    margin = list(l = 250, t = 50),
     paper_bgcolor = 'transparent'
   )
 p
@@ -179,7 +183,7 @@ We'll break up our analysis into indicators that have positively and negatively 
 
 ### Positively Correlated Indicators
 One clear indictar that has positively affected is **GDP**. We'll see how this is correlated with happiness throughout the past 5 years. Note that this just for the entire world, not individual countries.
-```{r positiveIndicators, echo=FALSE, fig.width=10, fig.height=8}
+```{r positiveIndicators, echo=FALSE, fig.width=10, fig.height=8, warning=FALSE}
 reqInd = c("GDP per capita, PPP (current international $)",
            "Urban population (% of total population)",
            "Wage and salaried workers, total (% of total employment) (modeled ILO estimate)",
@@ -189,6 +193,7 @@ positiveIndicators = allCors[allCors$WDI %in% reqInd,]
 unmelted <- dcast(data = positiveIndicators, formula = Year~WDI, fun.aggregate = sum, value.var = "Correlation")
 # Calculate change from 2014...
 unmelted[,2:5] <- apply(unmelted[,2:5], 2, function(x) {(x / x[1] - 1) * 100})
+colors = c("violet", "#5612CC", "9E3F3D", "red")
 # First trace...
 p <- plot_ly(data = unmelted,
              x = ~Year,
@@ -196,24 +201,33 @@ p <- plot_ly(data = unmelted,
              name = substr(reqInd[1], 1, gregexpr('\\(', reqInd[1])[[1]][1] - 2),
              type = 'scatter',
              mode = 'lines',
-             colors = "yellow"
+             line = list(color = colors[1]),
+             hovertemplate = paste('<b>%{y:2.2f}%</b>')
 )
 # For the rest, add traces as necessary...
-for (ind in reqInd[2:4]) {
+for (i in 2:4) {
+  ind = reqInd[i]
   p <- p %>% add_trace(
     y = as.formula(paste0("~`", ind, "`")),
-    name = substr(ind, 1, gregexpr('\\(', ind)[[1]][1] - 2)
+    name = substr(ind, 1, gregexpr('\\(', ind)[[1]][1] - 2),
+    line = list(color = colors[i]),
+    hovertemplate = paste('<b>%{y:2.2f}%</b>')
   )
 }
 p <- layout(p,
   font = list(family = "'Montserrat', sans-serif"),
-  title = "% Change of Correlation of Positive WB Indicators wrt 2014",
-  xaxis = list(dtick = 1),
-  yaxis = list(title = "Percentage Change from 2014"),
+  title = "<b>% Change of Correlation of Positive WB Indicators wrt 2014</b>",
+  titlefont = list(size = 22),
+  xaxis = list(dtick = 1,
+               title = "<i>Year</i>",
+               titlefont = list(size = 18)),
+  yaxis = list(title = "<i>Percentage Change from 2014</i>",
+               titlefont = list(size = 18)),
   legend = list(x = 0, y = 0, xpd = TRUE),
   plot_bgcolor = 'transparent',
   paper_bgcolor = 'transparent',
-  margin = list(r = 50)
+  margin = list(r = 50, t = 50),
+  hovermode = 'compare'
 )
              
 p
@@ -229,7 +243,7 @@ One interesting trend here is that in the first year, 3 of the 4 indicators all 
 
 ### Negatively Correlated Variables
 From our heatmap above, we can see that **vulnerable employment** and **mortality rates** are negatively correlating with happiness for 2018. We'll see if this trend held for the past 5 years. Now, since we are more interested in the magintude of the correlation, rather than the sign in this section, the correlation values have been forced to be positive.
-```{r negativeCorrelation, echo=FALSE, fig.width=10, fig.height=8}
+```{r negativeCorrelation, echo=FALSE, fig.width=10, fig.height=8, warning=FALSE}
 reqInd = c(
   "Vulnerable employment, total (% of total employment) (modeled ILO estimate)",
   "Mortality rate, infant (per 1,000 live births)",
@@ -248,23 +262,34 @@ p <- plot_ly(data = unmelted,
              y = as.formula(paste0("~`", reqInd[1], "`")),
              name = substr(reqInd[1], 1, gregexpr('\\(', reqInd[1])[[1]][1] - 2),
              type = 'scatter',
-             mode = 'lines')
+             mode = 'lines',
+             line = list(color = colors[1]),
+             hovertemplate = paste('<b>%{y:2.2f}%</b>')
+)
 # For the rest, add traces as necessary...
-for (ind in reqInd[2:4]) {
+for (i in 2:4) {
+  ind = reqInd[i]
   p <- p %>% add_trace(
     y = as.formula(paste0("~`", ind, "`")),
-    name = substr(ind, 1, gregexpr('\\(', ind)[[1]][1] - 2)
+    name = substr(ind, 1, gregexpr('\\(', ind)[[1]][1] - 2),
+    line = list(color = colors[i]),
+    hovertemplate = paste('<b>%{y:2.2f}%</b>')
   )
 }
 p <- layout(p,
   font = list(family = "'Montserrat', sans-serif"),
-  title = "% Change of Correlation of Negative WB Indicators wrt 2014",
-  xaxis = list(dtick = 1),
-  yaxis = list(title = "Percentage Change from 2014"),
+  title = "<b>% Change of Correlation of Negative WB Indicators wrt 2014</b>",
+  titlefont = list(size = 22),
+  xaxis = list(dtick = 1,
+               title = "<i>Year</i>",
+               titlefont = list(size = 18)),
+  yaxis = list(title = "<i>Percentage Change from 2014</i>",
+               titlefont = list(size = 18)),
   legend = list(x = 0, y = 0, xpd = TRUE),
   plot_bgcolor = 'transparent',
   paper_bgcolor = 'transparent',
-  margin = list(r = 50)
+  margin = list(r = 50, t = 50),
+  hovermode = 'compare'
 )
 p
 ```
@@ -278,7 +303,7 @@ What about those indicators that do not have extreme values i.e. ones with corre
 - Number of days to get electricity
 - Unemployment(!)
 We suspected that the primary school starting age should at least affect happiness, as starting school later directly means more family time for the young kids. We also believed that as the time to get electricity increases, the overall happiness decreases, as that a huge setback in how citizens can go about their day-to-day lives. Surprisingly, the actual unemployment doesn't affect happiness at all (a correlation that is essentially 0 for 2018). Let's see how the correlation trends are:
-```{r otherGraph, echo=FALSE, fig.width=10, fig.height=8}
+```{r otherGraph, echo=FALSE, fig.width=10, fig.height=8, warning=FALSE}
 reqInd = c(
   "Primary school starting age (years)",
   "Time required to get electricity (days)",
@@ -296,23 +321,34 @@ p <- plot_ly(data = unmelted,
              y = as.formula(paste0("~`", reqInd[1], "`")),
              name = substr(reqInd[1], 1, gregexpr('\\(', reqInd[1])[[1]][1] - 2),
              type = 'scatter',
-             mode = 'lines')
+             mode = 'lines',
+             line = list(color = colors[1]),
+             hovertemplate = paste('<b>%{y:2.2f}%</b>')
+)
 # For the rest, add traces as necessary...
-for (ind in reqInd[2:3]) {
+for (i in 2:3) {
+  ind = reqInd[i]
   p <- p %>% add_trace(
     y = as.formula(paste0("~`", ind, "`")),
-    name = substr(ind, 1, gregexpr('\\(', ind)[[1]][1] - 2)
+    name = substr(ind, 1, gregexpr('\\(', ind)[[1]][1] - 2),
+    line = list(color = colors[i]),
+    hovertemplate = paste('<b>%{y:2.2f}%</b>')
   )
 }
 p <- layout(p,
   font = list(family = "'Montserrat', sans-serif"),
-  title = "% Change of Correlation of Uncorrelated WB Indicators wrt 2014",
-  xaxis = list(dtick = 1),
-  yaxis = list(title = "Percentage Change from 2014"),
+  title = "<b>% Change of Correlation of Uncorrelated WB Indicators wrt 2014</b>",
+  titlefont = list(size = 22),
+  xaxis = list(dtick = 1,
+               title = "<i>Year</i>",
+               titlefont = list(size = 18)),
+  yaxis = list(title = "<i>Percentage Change from 2014</i>",
+               titlefont = list(size = 18)),
   legend = list(x = 0, y = 0, xpd = TRUE),
   plot_bgcolor = 'transparent',
   paper_bgcolor = 'transparent',
-  margin = list(r = 50)
+  margin = list(r = 50, t = 50),
+  hovermode = 'compare'
 )
 p
 ```
@@ -325,3 +361,6 @@ Interestingly, the starting age for primary school initially lost its correlatio
 ## How do happiness correlations differ from country to country?
 
 We've seen how happiness correlates with World Bank indicators throughout the years, but what happens at a country level? Do Americans' happiness correlate with the same or similar indicators as do the Chinese? What about European nations and Scandinavian nations (Finland has been the happiest country 2 years running)?
+
+## Conclusion and Future Work
+Place text here.
