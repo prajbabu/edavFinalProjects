@@ -44,4 +44,4 @@ the following countries in the happiness data go by different names (sometimes o
 \*Note these are not in the World Bank Indicators dataset.
 
 #### Acknowledgements
-Credit to (this)[https://github.com/tholman/github-corners] Github repo for the nice corner Github link on the report.
+Credit to (this){https://github.com/tholman/github-corners} Github repo for the nice corner Github link on the report.
