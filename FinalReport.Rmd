@@ -26,10 +26,14 @@ We are interested in analyzing how such development indicators relate to the glo
 For instance, we often hear that money can buy happiness, but is this true? It might also be that higher employment rates relate to a higher happiness score. Our curioustry to test these myths led us to analyzing this dataset. 
 
 Throughout this analysis, we will focus on answering the following three questions:
+
 1. How does happiness scores and indicators relate to the more specific indicators that the World Bank measures?
 2. How do certain World Bank indicators correlate with happiness values throughout the past 5 years?
 3. How do happiness correlations differ from country to country?
 
+First, we'll describe the data sources and transformations that it underwent before we get to the analysis.
+
+***
 
 ## Data sources
 For the plots and analysis presented in this report, we merged the findings from two separate data sources: the World Happiness Reports, and the expansive set of World Bank indicators.
@@ -116,9 +120,9 @@ cormat = cor(x = mergedData[,3:128], y = mergedData[,129:134], use = "complete.o
 
 ```
 
-![***Upset plot showing intersection sets of missing data.***](UpSetPlot.png)
+![***UpSet plot showing intersection sets of missing data.***](UpSetPlot.png)
 
-The UpSet plot only shows variables which have missing data. Because the variables representing the happiness score, country, or year were displayed, this implies that we actually have a happiness score for each country and for each year. Many times, however, all 5 of the indicators were missing, yet still there was still was score. How can this be the case that we have a calculated score when we don't have raw indicators? Well, the report has answered exactly that, as they detail how they obtained the data for those indicators. From the (Statistical Appendix)[https://s3.amazonaws.com/happiness-report/2019/WHR19_Ch2A_Appendix1.pdf], we see that they healthy life expectancy is actually measured by the World Health Orgainization, and only for the years 2000, 2005, 2010, 2015, and 2016. At times, the actually used "interpolation and extrapolation". They also note "[a] few territories/countries are not covered in the WHO data." This explains partly the missing values for healthy life expectancy.
+The UpSet plot only shows variables which have missing data. Because the variables representing the happiness score, country, or year were displayed, this implies that we actually have a happiness score for each country and for each year. Many times, however, all 5 of the indicators were missing, yet still there was still was score. How can this be the case that we have a calculated score when we don't have raw indicators? Well, the report has answered exactly that, as they detail how they obtained the data for those indicators. From the [Statistical Appendix](https://s3.amazonaws.com/happiness-report/2019/WHR19_Ch2A_Appendix1.pdf), we see that they healthy life expectancy is actually measured by the World Health Orgainization, and only for the years 2000, 2005, 2010, 2015, and 2016. At times, the actually used "interpolation and extrapolation". They also note "[a] few territories/countries are not covered in the WHO data." This explains partly the missing values for healthy life expectancy.
 
 In the other indicators, the average of responses to relevant Gallup World Poll (GWP) questions were taken. For example, for the "Social support" category, the relevant GWP question was "If you were in trouble, do you have relatives or friends you can count on to help you whenever you need them, or not?". If this question was not asked in a specific country, then naturally that data will end up missing. 
 
@@ -379,30 +383,32 @@ Interestingly, the starting age for primary school initially lost its correlatio
 
 We've seen how happiness correlates with World Bank indicators throughout the years, but what happens at a country level? Do Americans' happiness correlate with the same or similar indicators as do the Chinese? What about European nations and Scandinavian nations (Finland has been the happiest country 2 years running)?
 
-To help visualize this, we’ve created an interactive world map which allows you to select any Country to see which World Bank development indicator was the most positively correlated to the happiness score for that country, the most negatively correlated to the happiness score for that country. 
+To help visualize this, we’ve created an [interactive world map](https://bl.ocks.org/prajbabu/raw/64632ce0480ca5bdfdc03ebe55189d20/12a274ef2c6317be19034e950be307cfcd3b3d35/) which allows you to select any country to see which World Bank development indicator was the most positively correlated to the happiness score for that country, the most negatively correlated to the happiness score for that country, for the past 5-year time period between 2014 and 2018. You can see how these two indicators, along with happiness, change over this time. We've compiled our thoughts on three countries below, the United States, China, and Finland.
 
-Link to interactive world map: 
-https://bl.ocks.org/prajbabu/raw/64632ce0480ca5bdfdc03ebe55189d20/12a274ef2c6317be19034e950be307cfcd3b3d35/
+Upon selecting a country, you can see a line chart depicting the percent change over the last 5 years for values of the two indicators and the percent change in the country's happiness score.
 
-Upon selecting a Country, you can see a line chart depicting the percent change over the last 5 years for values of the two indicators and the percent change in the happiness score assigned to that Country.
+### United States
+Upon clicking the United States, the line chart that pops up depicts the percent changes of the **personal remittances received** a.k.a. income from a foreign economy as a positively correlated indicator, the **labor force participation rate** as the negatively correlated indicator, and the USA's happiness. You will notice that even though the labor participation rate has increased over time, the happiness has decreased. Perhaps this is due to the large drop in personal remittances. This means that more people are dependent on money incoming from sources outside the United States, such as family living abroad, or employers abroad. 
 
-For instance, upon clicking on the United States, you will be prompted a line chart that depicts the percent changes of Personal Remittances Received as a positively correlated indicator, Labor Force Participation rate as the negatively correlated indicator, and the Happiness Score. You will notice that even though the Labor Force Participation rate has increased overtime, the Happiness score has decreased. Perhaps this is due to the large drop in Personal Remittances, meaning the income from a foreign economy. This means that more people are dependent on money incoming from sources outside the United States, such as family living abroad, or employers abroad. 
+### China
+Let’s take a look at another major country’s indicators: China.
+Well, this country’s happiness scores seems to have slightly increased over the last 5 years. The most positively correlated indicator is the **net barter terms of trade index** while the most negatively correlated indicator is the import unit value index. The net barter terms of trade index is simply the ratio of the export unit value index to the import unit value index ratio. The higher this ratio, the more valuable its exports are in relation to its imports. Because its import unit value index is also decreasing during this time, China's increase in happiness relates directly to its increased value of its exports. 
 
-Let’s take a look at another Country’s indicators. What about China?
-Well, this Country’s happiness scores seems to have slightly increased over the last 5 years. The most positively correlated indicator seems to be the Net Barter Terms of Trade Index while the most negatively correlated indicator is the import unit value index. What does this mean? The Net Barter Terms of Trade Index is simply the ratio of the export unit value ratio to the import unit value ratio. The higher this ratio, the happier the country seems to be. 
+### Finland
+Finally, how about a country that’s been ranked the happiest the past 2 years?
+Finland’s happiness scores hasn't fluctuated much over the past 5 years. The most positively correlated indicator is the amount of secure internet servers. This value was increased more than 1000% since 2014. Data storage on the cloud is becoming a priority for many companies, and Finland is a country where many choose to build their remote servers. For instance, Google and Minecraft have placed their remote servers here. Perhaps this brings in a large income to the Country, while also providing job opportunities to residents. We can also notice that a decrease in the youth population (aged 0 -  14) correlates to happiness. 
 
-Finally, how about a Country that’s been ranked the Happiest?
-Finland’s happiness scores didn’t fluctuate much over the past 5 years. The most positively correlated indicator is the amount of secure internet servers. This value was increased more than 1000% since 2014. Data storage on the cloud is becoming a priority for many companies, and Finland is a country where many choose to build their remote servers. For instance, Google and Minecraft have placed their remote servers here. Perhaps this brings in a large income to the Country, while also providing job opportunities to residents. We can also notice that a decrease in the youth population (Aged 0 -  14) correlates to happiness. 
-
-As you can see, the indicators that correlate to happiness vary from Country to Country and it’s fun to come up with reasons/explanations as to why these indicators are correlated. 
+As you can see, the indicators that correlate to happiness vary from country to country and it’s fun to come up with reasons/explanations as to why these indicators are correlated. 
 
 Feel free to click on a few countries and compare the correlated indicators!
 
 ***
 
 ## Conclusion and Future Work
-During the course of this analysis, we faced a few limitations. Initially we anticipated to analyze values of the development indicates for a longer time frame (i.e 2000-2019), but we soon came to realize that the World Bank Indicators dataset contains many missing values, as they did not have the means to measure many indicators until the more recent years. Also, the World Happiness Report did not publish annually till 2015, thus restraining our analysis to be between 2015 and 2019. In addition, for the data between the years 2015 - 2019, many Countries were excluded from the analysis due to missing values. Many of these Countries were developing countries that might not have policies in place yet to measure development indicators. 
+During the course of this analysis, we faced a few limitations. Initially we anticipated to analyze values of the development indicates for a longer time frame (i.e 2000-2019), but we soon came to realize that the World Bank indicators dataset contains many missing values, as they did not have the means to measure many indicators until the more recent years. Also, the World Happiness Report did not publish annually till 2015, thus restraining our analysis to be between 2015 and 2019. In addition, for the data between the years 2015 - 2019, many countries were excluded from the analysis due to missing values. Many of these countries were developing countries that might not have policies in place yet to measure development indicators. 
 
-In the future, we think it would be interesting to not only view the highly correlated development indicators for each Country, but also for each region(i.e North America, Europe, Middle East, East Asian, etc.) 
+We also want to convey the importance that **correlation does not imply causation**. Even though an indicator may be correlated with happiness, it does not mean it causes it directly. There are could a bevy of other factors that could cause happiness, and the World Happiness Report aims to examine those factors.
 
-From this project, we learned how to deal with large datasets and extract fields of interest to our analysis. We also learned how to merge datasets based on a key column (Country Name) and the problems that arise when different sources have different naming conventions. And finally, we gained experience with using a TopoJSON file that contains Country coordinates, boundaries, and identifier values to plot an interactive world map using D3. 
+In the future, we think it would be interesting to not only view the highly correlated development indicators for each country, but also for each region i.e North America, EU, Middle East, East Asia, etc.
+
+From this project, we learned how to deal with large datasets and extract fields of interest to our analysis. We also learned how to merge datasets based on a key column (Country Name) and the problems that arise when different sources have different naming conventions. And finally, we gained experience with using a TopoJSON file that contains country coordinates, boundaries, and identifier values to plot an interactive world map using D3. 
