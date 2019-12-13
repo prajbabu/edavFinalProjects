@@ -396,4 +396,8 @@ Feel free to click on a few countries and compare the correlated indicators!
 ***
 
 ## Conclusion and Future Work
-Place text here.
+During the course of this analysis, we faced a few limitations. Initially we anticipated to analyze values of the development indicates for a longer time frame (i.e 2000-2019), but we soon came to realize that the World Bank Indicators dataset contains many missing values, as they did not have the means to measure many indicators until the more recent years. Also, the World Happiness Report did not publish annually till 2015, thus restraining our analysis to be between 2015 and 2019. In addition, for the data between the years 2015 - 2019, many Countries were excluded from the analysis due to missing values. Many of these Countries were developing countries that might not have policies in place yet to measure development indicators. 
+
+In the future, we think it would be interesting to not only view the highly correlated development indicators for each Country, but also for each region(i.e North America, Europe, Middle East, East Asian, etc.) 
+
+From this project, we learned how to deal with large datasets and extract fields of interest to our analysis. We also learned how to merge datasets based on a key column (Country Name) and the problems that arise when different sources have different naming conventions. And finally, we gained experience with using a TopoJSON file that contains Country coordinates, boundaries, and identifier values to plot an interactive world map using D3. 
