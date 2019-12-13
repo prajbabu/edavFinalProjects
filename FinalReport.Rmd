@@ -404,6 +404,8 @@ As you can see, the indicators that correlate to happiness vary from country to 
 
 Feel free to click on a few countries and compare the correlated indicators!
 
+If you would like to find a description on any of the indicators, please refer to the [World Bank Open Data](https://data.worldbank.org/) page to look up the indicators.
+
 ***
 
 ## Conclusion and Future Work
