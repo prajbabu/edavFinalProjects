@@ -11,6 +11,11 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r WDIPrep, code = readLines('./dataPrepper.R'), echo=FALSE, warning=FALSE, message=FALSE}
+```
+```{r happyPrep, code = readLines('./happyPrepper.R'), echo=FALSE, warning=FALSE, message=FALSE}
+```
+
 ## Introduction
 The goal of our analysis is to gain insight into what factors contribute towards happiness of populations around the world, and how these factors have changed over time.
 
