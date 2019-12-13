@@ -5,13 +5,13 @@ This repository holds the report which examines happiness values and a swath of 
 First, due to the size of the initial World Bank dataset, we will not house the original. Instead, follow these steps to reproduce the report:
 
 1. Clone this repo into a folder.
-2. Download the full World Bank Indicator set (~64 MB) [here](http://databank.worldbank.org/data/download/WDI_excel.zip)
-3. Extract the sole Excel file inside to the repo folder.
-4. Open RStudio, and knit the `FinalReport.Rmd` to HTML. The requisite transformed datasets will get generated, as the happiness data is pulled from online. That said, please ensure you have an internet connection if you are running for the first time. As long as the transformed file exists, the transformation scripts will not be run.
+2. Download the full World Bank Indicator set (~64 MB) [here](http://databank.worldbank.org/data/download/WDI_excel.zip).
+3. Extract the sole Excel file inside to top level repo folder `/edavFinalProjects`.
+4. Open RStudio, and knit the `FinalReport.Rmd` inside the `ReportOutput` folder to HTML. Make sure the working directory is set to the top level `edavFinalProjects` directory! The requisite transformed datasets will get generated, as the happiness data is pulled from online. That said, please ensure you have an internet connection if you are running for the first time. As long as the transformed file exists, the transformation scripts will not be run.
 5. Enjoy!
 
 ### Interactivity
-We also produced an interactive visualization house [here](https://bl.ocks.org/prajbabu/raw/64632ce0480ca5bdfdc03ebe55189d20/71d16abad6fb300447918e825cab23db20c43f21/).
+We also produced an interactive visualization house [here](https://bl.ocks.org/prajbabu/raw/64632ce0480ca5bdfdc03ebe55189d20/71d16abad6fb300447918e825cab23db20c43f21/) for your leisure.
 
 ## Mismatched countries
 the following countries in the happiness data go by different names (sometimes offical) in the WDI data: There are only 18 of them, so it is easy enough to do a hard-code replacement. **Taiwan** and **Somaliland** (a region of autonomity in upper Somalia) are not in the WDI dataset.
