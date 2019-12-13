@@ -11,7 +11,7 @@ First, due to the size of the initial World Bank dataset, we will not house the 
 5. Enjoy!
 
 ### Interactivity
-We also produced an interactive visualization house [here](https://bl.ocks.org/prajbabu/raw/64632ce0480ca5bdfdc03ebe55189d20/12a274ef2c6317be19034e950be307cfcd3b3d35/).
+We also produced an interactive visualization house [here](https://bl.ocks.org/prajbabu/raw/64632ce0480ca5bdfdc03ebe55189d20/71d16abad6fb300447918e825cab23db20c43f21/).
 
 ## Mismatched countries
 the following countries in the happiness data go by different names (sometimes offical) in the WDI data: There are only 18 of them, so it is easy enough to do a hard-code replacement. **Taiwan** and **Somaliland** (a region of autonomity in upper Somalia) are not in the WDI dataset.
