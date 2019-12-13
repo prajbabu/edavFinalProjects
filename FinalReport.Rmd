@@ -374,5 +374,26 @@ Interestingly, the starting age for primary school initially lost its correlatio
 
 We've seen how happiness correlates with World Bank indicators throughout the years, but what happens at a country level? Do Americans' happiness correlate with the same or similar indicators as do the Chinese? What about European nations and Scandinavian nations (Finland has been the happiest country 2 years running)?
 
+To help visualize this, we’ve created an interactive world map which allows you to select any Country to see which World Bank development indicator was the most positively correlated to the happiness score for that country, the most negatively correlated to the happiness score for that country. 
+
+Link to interactive world map: 
+https://bl.ocks.org/prajbabu/raw/64632ce0480ca5bdfdc03ebe55189d20/12a274ef2c6317be19034e950be307cfcd3b3d35/
+
+Upon selecting a Country, you can see a line chart depicting the percent change over the last 5 years for values of the two indicators and the percent change in the happiness score assigned to that Country.
+
+For instance, upon clicking on the United States, you will be prompted a line chart that depicts the percent changes of Personal Remittances Received as a positively correlated indicator, Labor Force Participation rate as the negatively correlated indicator, and the Happiness Score. You will notice that even though the Labor Force Participation rate has increased overtime, the Happiness score has decreased. Perhaps this is due to the large drop in Personal Remittances, meaning the income from a foreign economy. This means that more people are dependent on money incoming from sources outside the United States, such as family living abroad, or employers abroad. 
+
+Let’s take a look at another Country’s indicators. What about China?
+Well, this Country’s happiness scores seems to have slightly increased over the last 5 years. The most positively correlated indicator seems to be the Net Barter Terms of Trade Index while the most negatively correlated indicator is the import unit value index. What does this mean? The Net Barter Terms of Trade Index is simply the ratio of the export unit value ratio to the import unit value ratio. The higher this ratio, the happier the country seems to be. 
+
+Finally, how about a Country that’s been ranked the Happiest?
+Finland’s happiness scores didn’t fluctuate much over the past 5 years. The most positively correlated indicator is the amount of secure internet servers. This value was increased more than 1000% since 2014. Data storage on the cloud is becoming a priority for many companies, and Finland is a country where many choose to build their remote servers. For instance, Google and Minecraft have placed their remote servers here. Perhaps this brings in a large income to the Country, while also providing job opportunities to residents. We can also notice that a decrease in the youth population (Aged 0 -  14) correlates to happiness. 
+
+As you can see, the indicators that correlate to happiness vary from Country to Country and it’s fun to come up with reasons/explanations as to why these indicators are correlated. 
+
+Feel free to click on a few countries and compare the correlated indicators!
+
+***
+
 ## Conclusion and Future Work
 Place text here.
