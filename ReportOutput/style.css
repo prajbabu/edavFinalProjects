@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css?family=Comfortaa|Montserrat|PT+Mono&display=swap');
+
+body{
+  background-color: #F5F5DC;
+  color: black;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14pt;
+}
+/* Headers */
+h1,h2,h3,h4,h5,h6{
+  font-family: 'Comfortaa', cursive;
+}
+h4 {
+  font-style: italic;
+}
+
+pre code {
+  font-family: 'PT Mono', monospace;
+}

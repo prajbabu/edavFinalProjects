@@ -2,7 +2,7 @@ library(readxl)
 library(tidyverse)
 
 if (!file.exists('./WDI-tidied.csv')) {
-  fullData <- read_xlsx('./WDIEXCEL.xlsx', sheet = "Data")
+  fullData <- read_xlsx('../WDIEXCEL.xlsx', sheet = "Data")
   # # Convert to factors...
   # fullData$`Country Name` <- as.factor(fullData$`Country Name`)
   # fullData$`Country Code` <- as.factor(fullData$`Country Code`)

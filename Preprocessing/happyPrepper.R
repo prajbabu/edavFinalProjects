@@ -50,7 +50,6 @@ if (!file.exists('./happy.csv')) {
   colnames(happyDF) <- c(globalCountryColName, globalYearName, indicatorNames, "Happiness score")
   
   for (i in 1:5) {
-    print(years[i])
     # Download excel file to a temp file..
     # 2015-2017 reports are xlsx files,
     # while 2018 and 2019 reports are xls files
