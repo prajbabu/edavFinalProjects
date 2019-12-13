@@ -1,75 +1,80 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<style>svg{width:100%;height:550px;position:center;margin:10px auto;}
+<style>
+svg {
+  width:100%;
+  height:550px;
+  position:center;
+  margin:10px auto;
+}
 div.tooltip {
-          position: absolute;
-          text-align: center;
-          width: auto;
-          height: 20px;
-          padding: 4px;
-          font: 15px sans-serif;
-          border: 4px;
-          background-color: black;
-          border-radius: 25px;
-          color: white;
-      }
-      body {
+  text-align: center;
+  width: auto;
+  position: absolute;
+  padding: 4px;
+  border: 4px;
+  background-color: black;
+  border-radius: 25px;
+  color: white;
+  }
+body {
   background-color: lightblue;
   overflow:scroll;
+  font-family: Arial, Helvetica, sans-serif;
 }
-
-      .modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  padding-top: 110px;
   left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  width: 100%;
+  height: 100%;
+  overflow: auto;
 }
-
-/* Modal Content */
 .modal-content {
-  background-color: #fefefe;
   margin: auto;
-  padding: 0px;
-  border: 1px solid #888;
-  width: 80%;
+  width: 75%;
 }
 .svg{
   width: 400px;
-    height: 200px;
+  height: 200px;
   overflow:scroll;
 }
-
-
 </style>
+
 <body>
-  <h1>What Factors Correlate to World Happiness?</h1>
-  <h3>Click on a Country to find out which variables are the most correlated and least correlated to the Happiness rating.</h3>
-  <h4>Each plot depicts the percent change of the most correlated factor, least correlated factor, and overall Happiness rating.</h4>
-  <p>(The grey countries depict missing data, and have thus been excluded from the analysis.)</p>
+  <h1>How have people around the world perceived their happiness throughout the past 5 years?</h1>
+  <h4>Select any Country to see which World Bank development indicator was the most positively correlated and most negatively correlated to the happiness score.</h3>
+  <h4>Each line plot depicts the percent change of these two indicators and the Happiness Score.</h4>
+  <h4>Click on a Country to compare the correlated indicators to the Happiness Score!</h4>
+  <p>Note: Simply click anywhere outside the plot to choose another Country.</p>
+
   <svg></svg>
+
   <div id="myModal" class="modal">
     <div class="modal-content">
-  <div id = "myDiv"></div></div></div>
+      <div id = "myDiv"></div>
+    </div>
+  </div>
+
+  <p>**The grey countries have been excluded from the analysis due to missing data.</p>
 
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="https://d3js.org/topojson.v2.min.js"></script>
   <script src="https://d3js.org/d3-queue.v3.min.js"></script>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
 <script>
 var width = window.innerWidth;
 var heigh = window.innerHeight;
 var svg = d3.select("svg");
+//Referenced https://www.knoyd.com/blog/2017/6/23/create-map-in-d3-part1
 var path = d3.geoPath().projection(d3.geoMercator().scale(130)
-     // Pan north 40 degrees
      .center([30,65])
-    .translate([750,200]));
+     .translate([750,200])
+   );
 
 var xmlHttp = new XMLHttpRequest();
 var theURL = "https://restcountries.eu/rest/v2/all"
@@ -108,12 +113,10 @@ function cleanData(gid){
         else if (count <=10) {
           cleanDatavar2.push(parseFloat(rows[i].Percent))
           colnames[1] = rows[i].Indicator
-
         }
         else if (count <=15) {
           cleanDatavar3.push(parseFloat(rows[i].Percent))
           colnames[2] = rows[i].Indicator
-
         }
         count = count + 1;
       }
@@ -125,17 +128,15 @@ function cleanData(gid){
       x: [2014,2015,2016,2017,2018],
       y: cleanDatavar1,
       type: 'scatter',
-      name: colnames[0],
+      name: colnames[0] + "(Most Positively Correlated)",
       line: {color: 'green'}
-
     };
     var trace2 = {
       x: [2014,2015,2016,2017,2018],
       y: cleanDatavar2,
       type: 'scatter',
-      name: colnames[1],
+      name: colnames[1] + "(Most Negatively Correlated)",
       line: {color: 'red'}
-
     };
     var trace3 = {
       x: [2014,2015,2016,2017,2018],
@@ -145,7 +146,12 @@ function cleanData(gid){
       line: {color: 'blue'}
     };
     var layout = {
-      title:cname + "<br> ",
+      title:cname,
+      hovermode: false,
+      legend:
+      {x:0,
+    y: -1}
+  ,
   xaxis: {
     title: 'Year',
     dtick: 1,
@@ -167,12 +173,9 @@ function cleanData(gid){
 
     data = [trace1, trace2, trace3];
     var outp = data;
-    Plotly.newPlot('myDiv', data, layout);
+    Plotly.newPlot('myDiv', data, layout, {displayModeBar: false});
     return outp;
-
-
   });
-
 }
 
 var tooltip = d3.select("body").append("div")
@@ -182,13 +185,12 @@ var tooltip = d3.select("body").append("div")
 var countids = {}
 d3.csv("world-country-names.csv", function(data) {
             for (var i = 0; i < data.length; i++) {
-                console.log(data[i].name);
                 countids[data[i].id] = [data[i].analysis,data[i].name]
-
             }
         });
 
-
+//Map Layout using World Atlas JSON
+//Resource used: https://www.knoyd.com/blog/2017/6/23/create-map-in-d3-part1
 d3.json("https://unpkg.com/world-atlas@1/world/110m.json", function(error, world) {
   if (error) throw error;
   svg.selectAll("path")
@@ -209,11 +211,9 @@ d3.json("https://unpkg.com/world-atlas@1/world/110m.json", function(error, world
      .on('mouseover', function(d) {
        var gid = parseInt(d.id)
        if(countids[gid][0]=="yes"){
-
         d3.select(this).style('fill', 'white')
         tooltip.transition()
-            .duration(200)
-            .style("opacity", .9);
+            .style("opacity", 1);
         tooltip.html(countids[gid][1])
           .style("left", (d3.event.pageX) + "px")
           .style("top", (d3.event.pageY) + "px");
@@ -223,9 +223,7 @@ d3.json("https://unpkg.com/world-atlas@1/world/110m.json", function(error, world
         var gid = parseInt(d.id)
         if(countids[gid][0]=="yes"){
           tooltip.transition()
-              .duration(200)
               .style("opacity", 0);
-
          d3.select(this).style('fill', 'green')
        }
        })
@@ -233,23 +231,19 @@ d3.json("https://unpkg.com/world-atlas@1/world/110m.json", function(error, world
          var gid = parseInt(d.id)
          if(countids[gid][0]=="yes"){
           d3.select(this).style('fill', 'white')
-
           cleanData(gid);
 
+          //Modal Design from W3 Schools template
           var modal = document.getElementById("myModal");
           var span = document.getElementsByClassName("close");
           modal.style.display = "block";
-
+          //modal click out from w3 schools template
           window.onclick = function(event) {
             if (event.target == modal) {
               modal.style.display = "none";
             }
           }
-
         }
-
-
         })//end click
 });
-
 </script>
