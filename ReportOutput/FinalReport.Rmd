@@ -4,6 +4,7 @@ author: "Priyadharshini Rajbabu, Mughilan Muthupari"
 date: "12/10/2019"
 output: 
   html_document:
+    toc: true
     css: style.css
     includes:
       before_body: header.html
@@ -18,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r happyPrep, code = readLines('../Preprocessing/happyPrepper.R'), echo=FALSE, warning=FALSE, message=FALSE}
 ```
 
-## Introduction
+## 1 - Introduction
 The goal of our analysis is to gain insight into what factors contribute towards happiness of populations around the world, and how these factors have changed over time.
 
 Various countries are making progressions as time moves on in areas such as technology, water accessibility, literacy rates, health care, etc. These progressions are known as development indicators and are published by the World Bank. 
@@ -37,10 +38,10 @@ First, we'll describe the data sources and transformations that it underwent bef
 
 ***
 
-## Data sources
+## 2 - Data sources
 For the plots and analysis presented in this report, we merged the findings from two separate data sources: the World Happiness Reports, and the expansive set of World Bank indicators.
 
-### World Happiness Report
+### 2.1 - World Happiness Report
 To examine happiness, we utilized the annual World Happiness Reports from 2015 to 2019. An important thing to note is that the publishing year of the report references data collected from the *previous* year i.e. the 2019 World Happiness Report utilizes 2018 data. Each report has released data that they used to make the happiness plots. Included are the indicators that they have used. These indicators stay constant each year:
 
 - Gross Domestic Product (GDP)
@@ -54,7 +55,7 @@ The report details the exact meanings of these indicators each year. There is on
 
 Some issues is that although a happiness score will be present for each country, the raw values for the indicators above may not be. Additionally, each file can have inconsistencies with the column names and sheet names. 
 
-### World Bank indicators
+### 2.2 - World Bank indicators
 The World Bank houses an interactive data bank (located [here](https://data.worldbank.org/indicator)) with more than 1400 indicators for all the countries. The earliest year for some of these indicators is 1965, and it is continuously updating for the current year as data becomes available. In addition to each country, they also present aggregates for different regions of the globe, such as the Arab World, South Asia, and North America. The details of which countries belong to which group are also located at the website.
 
 The indicators themselves span multiple domains, from the economy to the health sector. Gross Domestic Product (GDP) measures are present, as well as population, education, immunization, energy consumption, and employment measures.
@@ -67,18 +68,18 @@ With respect to indicator values, each indicator can have an expansive descripti
 
 The merging of this data required subsetting the World Bank indicators to a small fraction of its size, according to constraints we imposed.
 
-## Data Transformation
+## 3 - Data Transformation
 We broke up our initial data transformation between the two datasets we used. A certain transformation was used for the World Bank indicators, and another was used for the Happiness data.
 
-### World Bank Indicators
+### 3.1 - World Bank Indicators
 Looking at all 1400 World Bank indicators at once will obviously be very efficient. Additionally, it is not guaranteed that every single indicator will have values for the past 5 years. For this reason, **we only took indicators that had values for each year from 2014 to 2018**. After this subsetting was done, we had around 125 final indicators we could analyze on. These indicators generally covered basic statistics, such as GDP, population, etc. but also had variables in other areas of the economy.
 
-### Happiness
+### 3.2 - Happiness
 The World Happiness Report was started in 2012, and has since been an annual occurrence, except for the 2014 report. Additionally, data was only released to the public since the 2015 report onwards. The report itself is tens of pages long, but the data used is released to the public as standard Microsoft Excel workbooks. In general, there is one sheet which had raw values for the six primary indicators detailed above, and another sheet which had the calculated happiness scores for each country in the report.
 
 Additionally, there were inconsistencies in the sheet and column names that needed to be explicitly written down. The 2015 sheet also had its data moved 2 rows down, and this had to be moved up to match the other report's data. We also had to take careful note that the list of countries in the report vary from year to year, as this impacted how we merge the two datasets.
 
-### Merging the two datasets
+### 3.3 - Merging the two datasets
 The main issue that arose when merging was that **countries in the happiness dataset did not match the ones in the World Bank dataset**. For example, "Palestinian Territories" was listed in the happiness data, but the World Bank gave it the other official name of "West Bank and Gaza". For the full list of mismatches, please consult our Github page. Fortunately, the list was small enough that we could explicitly convert the mismatched countries in the happiness dataset.
 
 Next, the World Bank dataset also had listed regions of countries, such as the Arab World and South Asia. To automatically remove these and since we are interested in how happiness relates to our data, we prioritized the **countries in the happiness dataset** when we merged the two.
@@ -87,7 +88,7 @@ The result is that we have a set of World Bank indicators AND a set of happiness
 
 ***
 
-## Missing data
+## 4 - Missing data
 We still need to address the issue of what data are missing. Fortunately, this handy graph below can tell us which variables are missing as well as how much of it is missing. As stated above, our transformed World Bank dataset will not have any missing data by construction. However, we still have some missing data in the happiness data set.
 ```{r missing, echo=FALSE, fig.width=10, fig.height=8, message=FALSE, warning=FALSE}
 library(visdat)
@@ -136,7 +137,7 @@ Due to missing factors, later on when we report on how happiness correlates with
 
 ***
 
-## How does happiness scores and indicators relate to the more specific indicators that the World Bank measures?
+## 5 - How does happiness scores and indicators relate to the more specific indicators that the World Bank measures?
 
 First, we want to see, in a broad sense, what specific World Bank indicators relate closely with the indicators that the World Happiness Reports use, as well as the actual score. To quantify, we can measure the correlation between each World Bank indicator and each happiness indicator for all countries in 2018. A correlation heatmap for each possible pair is seen below. World Bank indicators are placed alphabetically on the $x$-axis. Please hover to see the pair and its value.
 
@@ -201,10 +202,10 @@ for (year in years) {
 
 ***
 
-## How do certain World Bank indicators correlate with happiness values throughout the past 5 years?
+## 6 - How do certain World Bank indicators correlate with happiness values throughout the past 5 years?
 We'll break up our analysis into indicators that have positively and negatively correlated with happiness. Additionally, we'll also look at some indicators that we personally believe should be affecting happiness.
 
-### Positively Correlated Indicators
+### 6.1 - Positively Correlated Indicators
 One clear indicator that has positively affected is **GDP**. We'll see how this is correlated with happiness throughout the past 5 years. Note that this just for the entire world, not individual countries.
 ```{r positiveIndicators, echo=FALSE, fig.width=10, fig.height=8, warning=FALSE}
 reqInd = c("GDP per capita, PPP (current international $)",
@@ -264,7 +265,7 @@ Finally, the amount of domestic credit given to the private sector has been rela
 
 One interesting trend here is that in the first year, 3 of the 4 indicators all dropped their correlation values by a fair bit. In the next year, these jumped up, except for wage, which had less extreme downturn. The year of 2015 marked an uptick in the refugee crisis, and citizens around the world most likely saw how little the refugees had, and started to appreciate their current monetary holdings, regardless of what it was.
 
-### Negatively Correlated Variables
+### 6.2 - Negatively Correlated Variables
 From our heatmap above, we can see that **vulnerable employment** and **mortality rates** are negatively correlating with happiness for 2018. We'll see if this trend held for the past 5 years. Now, since we are more interested in the magnitude of the correlation, rather than the sign in this section, the correlation values have been forced to be positive.
 ```{r negativeCorrelation, echo=FALSE, fig.width=10, fig.height=8, warning=FALSE}
 reqInd = c(
@@ -320,7 +321,7 @@ How about that? Every single indicator shown above has shown a sharp downturn in
 
 Interestingly enough, the rural population's correlation *did* in fact stay the same until about 2016, when it started to decrease. Now, recall that our previous graph had **Urban population**, which was correlated in favor of happiness. It is completely plausible that during the past 5 years, there has been a substantial increase in the number of people moving to cities, which leads to them being happier in general. Cities also usually have more stable employment, and better health facilities to minimize the number of infant deaths. Just from the fact that an increased number of people have been moving to cities, one can make the argument that the indicators graphed above are declining in importance across the board.
 
-### Other Indicators
+### 6.3 - Other Indicators
 What about those indicators that do not have extreme values i.e. ones with correlations close to 0? We decided to examine 4 more indicators that do not correlate with happiness very well. These are:
 - Primary school starting age
 - Number of days to get electricity
@@ -381,7 +382,7 @@ Interestingly, the starting age for primary school initially lost its correlatio
 
 ***
 
-## How do happiness correlations differ from country to country?
+## 7 - How do happiness correlations differ from country to country?
 
 We've seen how happiness correlates with World Bank indicators throughout the years, but what happens at a country level? Do Americans' happiness correlate with the same or similar indicators as do the Chinese? What about European nations and Scandinavian nations (Finland has been the happiest country 2 years running)?
 
@@ -389,14 +390,14 @@ To help visualize this, we’ve created an [interactive world map](https://bl.oc
 
 Upon selecting a country, you can see a line chart depicting the percent change over the last 5 years for values of the two indicators and the percent change in the country's happiness score.
 
-### United States
+### 7.1 - United States
 Upon clicking the United States, the line chart that pops up depicts the percent changes of the **personal remittances received** a.k.a. income from a foreign economy as a positively correlated indicator, the **labor force participation rate** as the negatively correlated indicator, and the USA's happiness. You will notice that even though the labor participation rate has increased over time, the happiness has decreased. Perhaps this is due to the large drop in personal remittances. This means that more people are dependent on money incoming from sources outside the United States, such as family living abroad, or employers abroad. 
 
-### China
+### 7.2 - China
 Let’s take a look at another major country’s indicators: China.
 Well, this country’s happiness scores seems to have slightly increased over the last 5 years. The most positively correlated indicator is the **net barter terms of trade index** while the most negatively correlated indicator is the import unit value index. The net barter terms of trade index is simply the ratio of the export unit value index to the import unit value index ratio. The higher this ratio, the more valuable its exports are in relation to its imports. Because its import unit value index is also decreasing during this time, China's increase in happiness relates directly to its increased value of its exports. 
 
-### Finland
+### 7.3 - Finland
 Finally, how about a country that’s been ranked the happiest the past 2 years?
 Finland’s happiness scores hasn't fluctuated much over the past 5 years. The most positively correlated indicator is the amount of secure internet servers. This value was increased more than 1000% since 2014. Data storage on the cloud is becoming a priority for many companies, and Finland is a country where many choose to build their remote servers. For instance, Google and Minecraft have placed their remote servers here. Perhaps this brings in a large income to the Country, while also providing job opportunities to residents. We can also notice that a decrease in the youth population (aged 0 -  14) correlates to happiness. 
 
@@ -408,7 +409,7 @@ If you would like to find a description on any of the indicators, please refer t
 
 ***
 
-## Conclusion and Future Work
+## 8 - Conclusion and Future Work
 During the course of this analysis, we faced a few limitations. Initially we anticipated to analyze values of the development indicates for a longer time frame i.e. 2000-2019, but we soon came to realize that the World Bank indicators dataset contains many missing values, as they did not have the means to measure many indicators until the more recent years. Also, the World Happiness Report did not publish annually till 2015, thus restraining our analysis to be between 2015 and 2019. In addition, for the data between the years 2015 - 2019, many countries were excluded from the analysis due to missing values. Many of these countries were developing countries that might not have policies in place yet to measure development indicators. 
 
 We also want to convey the importance that **correlation does not imply causation**. Even though an indicator may be correlated with happiness, it does not mean it causes it directly. There are could a bevy of other factors that could cause happiness, and the World Happiness Report aims to examine those factors.
