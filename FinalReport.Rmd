@@ -13,9 +13,9 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r WDIPrep, code = readLines('./dataPrepper.R'), echo=FALSE, warning=FALSE, message=FALSE}
+```{r WDIPrep, code = readLines('./Preprocessing/dataPrepper.R'), echo=FALSE, warning=FALSE, message=FALSE}
 ```
-```{r happyPrep, code = readLines('./happyPrepper.R'), echo=FALSE, warning=FALSE, message=FALSE}
+```{r happyPrep, code = readLines('./Preprocessing/happyPrepper.R'), echo=FALSE, warning=FALSE, message=FALSE}
 ```
 
 ## Introduction
